@@ -32,7 +32,7 @@ function gotResults(err, result) {
         console.log(err)
         return
     }
-    // console.log(result)
+    console.log(result)
     detections = result;
 
     // background(220);
