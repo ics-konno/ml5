@@ -1,7 +1,6 @@
 let faceapi;
 let video;
 let detections;
-let RGB = {r:0, g:0, b:0}
 let stars = []
 let starSize = 10
 
@@ -46,6 +45,7 @@ function gotResults(err, result) {
             // console.log(detections)
             drawBox(detections)
             drawLandmarks(detections)
+            setFaceArea(detections)
         }
 
     }
@@ -69,13 +69,12 @@ function drawBox(detections) {
 }
 
 // 顔の面積を取得します
-function getFaceArea(detection) {
+function setFaceArea(detections) {
     for (let i = 0; i < detections.length; i++) {
         const alignedRect = detections[i].alignedRect;
         const boxWidth = alignedRect._box._width
         const boxHeight = alignedRect._box._height
-
-        return {boxWidth, boxHeight}
+        starSize = boxHeight / 10
     }
 }
 
@@ -107,28 +106,19 @@ function drawLandmarks(detections) {
 function drawStar(eye, LR) {
     const center = getCenter(eye)
 
-    starSize = getFaceArea().boxHeight / 10
 
     const star = new Star(center.avgX, center.avgY, starSize / 3, starSize, 5, LR)
     stars.push(star)
 
     stars.forEach(star => {
-            star.draw()
+        star.draw()
     })
-
     if(stars.length > 100) stars.shift()
-
 }
 
 function getCenter(arr) {
-    const sumX = arr.reduce((sum, item) => {
-            return sum + item._x;
-        }, 0
-    )
-    const sumY = arr.reduce((sum, item) => {
-            return sum + item._y;
-        }, 0
-    )
+    const sumX = arr.reduce((sum, item) => sum + item._x , 0)
+    const sumY = arr.reduce((sum, item) =>  sum + item._y , 0)
     const avgX = sumX / arr.length
     const avgY = sumY / arr.length
     return {avgX, avgY}
