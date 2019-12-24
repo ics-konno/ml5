@@ -11,11 +11,14 @@ PoseNet example using p5.js
 let video;
 let poseNet;
 let poses = [];
+let kanikoro
 
 function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
   video.size(width, height);
+
+  kanikoro = loadImage("./kanikoro.png")
 
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, modelReady);
@@ -38,6 +41,8 @@ function draw() {
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
   drawSkeleton();
+  drawKanikoroR()
+  drawKanikoroL()
 }
 
 // A function to draw ellipses over the detected keypoints
@@ -71,5 +76,44 @@ function drawSkeleton() {
       stroke(255, 0, 0);
       line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
     }
+  }
+}
+
+
+function drawKanikoroR() {
+  for(let i = 0; i < poses.length; i++) {
+    const rightWrist = poses[i].pose.rightWrist
+    const rightWristVector = createVector(rightWrist.x, rightWrist.y)
+    const rightElbow = poses[i].pose.rightElbow
+    const rightElbowVector = createVector(rightElbow.x, rightElbow.y)
+    const vy = createVector(0, 1)
+
+    const rightHandVector = createVector(rightWristVector.x - rightElbowVector.x, rightWristVector.y - rightElbowVector.y)
+    let rightAngle = rightHandVector.angleBetween(vy)
+    push()
+    translate(rightWrist.x + rightHandVector.x /10, rightWrist.y + rightHandVector.y/10)
+    rotate(Math.PI + rightAngle)
+    image(kanikoro, -75, -150, 150, 250)
+    pop()
+  }
+}
+
+function drawKanikoroL() {
+  for(let i = 0; i < poses.length; i++) {
+
+    const leftWrist = poses[i].pose.leftWrist
+    const leftWristVector = createVector(leftWrist.x, leftWrist.y)
+    const leftElbow = poses[i].pose.leftElbow
+    const leftElbowVector = createVector(leftElbow.x, leftElbow.y)
+    const vy = createVector(0, 1)
+
+    const leftHandVector = createVector(leftWristVector.x - leftElbowVector.x, leftWristVector.y - leftElbowVector.y)
+    let leftAngle = leftHandVector.angleBetween(vy)
+
+    push()
+    translate(leftWrist.x, leftWrist.y)
+    rotate(Math.PI + leftAngle)
+    image(kanikoro, -75, -150, 150, 250)
+    pop()
   }
 }
