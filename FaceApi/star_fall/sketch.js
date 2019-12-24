@@ -3,6 +3,7 @@ let video;
 let detections;
 let RGB = {r:0, g:0, b:0}
 let stars = []
+let starSize = 10
 
 // by default all options are set to true
 const detection_options = {
@@ -12,7 +13,7 @@ const detection_options = {
 
 
 function setup() {
-    createCanvas(360, 270);
+    createCanvas(windowWidth, windowHeight);
 
     // load up your video
     video = createCapture(VIDEO);
@@ -67,84 +68,56 @@ function drawBox(detections) {
 
 }
 
+// 顔の面積を取得します
+function getFaceArea(detection) {
+    for (let i = 0; i < detections.length; i++) {
+        const alignedRect = detections[i].alignedRect;
+        const boxWidth = alignedRect._box._width
+        const boxHeight = alignedRect._box._height
+
+        return {boxWidth, boxHeight}
+    }
+}
+
 function drawLandmarks(detections) {
     noFill();
     stroke(161, 95, 251)
     strokeWeight(2)
 
     for (let i = 0; i < detections.length; i++) {
-        const mouth = detections[i].parts.mouth;
-        const nose = detections[i].parts.nose;
+        // const mouth = detections[i].parts.mouth;
+        // const nose = detections[i].parts.nose;
         const leftEye = detections[i].parts.leftEye;
         const rightEye = detections[i].parts.rightEye;
-        const rightEyeBrow = detections[i].parts.rightEyeBrow;
-        const leftEyeBrow = detections[i].parts.leftEyeBrow;
+        // const rightEyeBrow = detections[i].parts.rightEyeBrow;
+        // const leftEyeBrow = detections[i].parts.leftEyeBrow;
 
-        drawPart(mouth, true);
-        drawPart(nose, false);
-        drawPart(leftEye, true);
-        drawPart(leftEyeBrow, false);
-        drawPart(rightEye, true);
-        drawPart(rightEyeBrow, false);
+        // drawPart(mouth, true);
+        // drawPart(nose, false);
+        // drawPart(leftEye, true);
+        // drawPart(leftEyeBrow, false);
+        // drawPart(rightEye, true);
+        // drawPart(rightEyeBrow, false);
         drawStar(leftEye, "L")
         drawStar(rightEye, "R")
     }
 
 }
 
-function drawPart(feature, closed) {
-
-    // beginShape();
-    // for (let i = 0; i < feature.length; i++) {
-    //     const x = feature[i]._x
-    //     const y = feature[i]._y
-    //     vertex(x, y)
-    // }
-    //
-    // if (closed === true) {
-    //     endShape(CLOSE);
-    // } else {
-    //     endShape();
-    // }
-
-}
-
 function drawStar(eye, LR) {
-    const area = getArea(eye[0], eye[1], eye[2], eye[3])
     const center = getCenter(eye)
-    // console.log(center.avgX, center.avgY)
-    // console.log(area)
-    // if(area < 10){
-    //     RGB = {r:Math.random()*255, g:Math.random()*255,b:Math.random()*255}
 
-        // for(let i = 0 ; i++ ; i < 100) {
-        //     translate(center.avgX, center.avgY)
-            // stars.push(new Star(0, 0, 30, 30, 5))
-            // stars[i].draw()
+    starSize = getFaceArea().boxHeight / 10
 
-    const star = new Star(center.avgX, center.avgY, 3, 10, 5, LR)
+    const star = new Star(center.avgX, center.avgY, starSize / 3, starSize, 5, LR)
     stars.push(star)
-
-    // if (stars.length < 100) {
-    // if(area < 10){
 
     stars.forEach(star => {
             star.draw()
     })
-    // }
-        // }
+
     if(stars.length > 100) stars.shift()
-    // }
 
-}
-
-function getArea(p0, p1, p2, p3) {
-    const totalArea = (p0._y + p3._y) * (p3._x - p0._x) / 2
-    const area1 = (p0._y + p1._y) * (p1._x - p0._x) / 2
-    const area2 = (p1._y + p2._y) * (p2._x - p1._x) / 2
-    const area3 = (p2._y + p3._y) * (p3._x - p2._x) / 2
-    const area = totalArea - area1 - area2 - area3
-    return area
 }
 
 function getCenter(arr) {

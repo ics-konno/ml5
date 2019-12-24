@@ -141,7 +141,7 @@ function drawStar(eye, eye_image, faceArea) {
     // fill(c)
     // noStroke()
     // ellipse(center.avgX, center.avgY , 20, 20)
-    const eye_size = {x: faceArea.x, y: faceArea.y, width: faceArea.boxWidth / 2, height: faceArea.boxHeight / 2}
+    const eye_size = {x: faceArea.x, y: faceArea.y, width: faceArea.boxWidth / 2, height: this.width / 2}
     image(eye_image, center.avgX - eye_size.width/2, center.avgY - eye_size.height/2, eye_size.width, eye_size.height)
 }
 
