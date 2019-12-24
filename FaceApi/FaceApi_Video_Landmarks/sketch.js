@@ -60,7 +60,7 @@ function drawBox(detections){
         const y = alignedRect._box._y
         const boxWidth = alignedRect._box._width
         const boxHeight  = alignedRect._box._height
-        
+
         // noFill();
         // stroke(161, 95, 251);
         // strokeWeight(2);
@@ -69,7 +69,7 @@ function drawBox(detections){
         // image(img, x, y, boxWidth, boxHeight)
         // rect(x, y, boxWidth, boxHeight);
     }
-    
+
 }
 
 function drawLandmarks(detections){
@@ -78,7 +78,7 @@ function drawLandmarks(detections){
     strokeWeight(2)
 
     for(let i = 0; i < detections.length; i++){
-        const mouth = detections[i].parts.mouth; 
+        const mouth = detections[i].parts.mouth;
         const nose = detections[i].parts.nose;
         const leftEye = detections[i].parts.leftEye;
         const rightEye = detections[i].parts.rightEye;
@@ -97,18 +97,19 @@ function drawLandmarks(detections){
 }
 
 function drawPart(feature, closed){
-    
+
     beginShape();
     for(let i = 0; i < feature.length; i++){
         const x = feature[i]._x
         const y = feature[i]._y
         vertex(x, y)
     }
-    
+
     if(closed === true){
         endShape(CLOSE);
     } else {
         endShape();
     }
-    
+
 }
+
